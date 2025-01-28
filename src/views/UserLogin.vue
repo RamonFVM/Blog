@@ -1,40 +1,39 @@
 <template>
+   <MyHeader />
    <div class="div-login">
      <form>
        <h2 class="typewriter">Login</h2>
-       <label class="typewriter">Usuario</label>
-       <input  type="text">
+       <label class="typewriter">Usuário</label>
+       <input type="text" />
        <label class="typewriter">Senha</label>
-       <input type="password">
+       <input type="password" />
        <button class="btn">Entrar</button>
      </form>
-       <span> <router-link to="/registrar">Registrar-se</router-link></span>
+     <span> <router-link to="/registrar">Registrar-se</router-link></span>
    </div>
  </template>
-
  
+ <script>
+ import MyHeader from '@/components/Header/MyHeader.vue';
+ 
+ export default {
+   components: {
+     MyHeader,
+   },
+ }
+ </script>
  
  <style scoped>
 
- @keyframes typing {
-   from {
-     width: 0;
-   }
-   to {
-     width: 100%;
-   }
- }
- 
-
- 
-
+  
  .div-login {
-   background-color:#202024;
+   background-color: #202024;
    padding: 2rem;
    border-radius: 10px;
    width: 30rem;
    margin: 50px auto;
-   height: 28rem;
+   height: auto;
+   min-height: 29rem;
    border: 3px solid #39FF14;
    display: flex;
    flex-direction: column;
@@ -46,17 +45,15 @@
    flex-direction: column;
  }
  
-
  .typewriter {
    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
    font-size: 1.8rem;
    color: #39FF14;
    white-space: nowrap;
    overflow: hidden;
-   animation: typing 3s steps(30) 1s forwards;
+
  }
  
-
  input {
    padding: 12px;
    margin-top: 16px;
@@ -67,14 +64,15 @@
    font-size: 1.2rem;
    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
    transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-input:focus {
+ }
+ 
+ input:focus {
    border-color: #39FF14;
    outline: none;
    box-shadow: 0 0 12px rgba(57, 255, 20, 0.6);
    transform: scale(1.02);
-}
+ }
+ 
  h2 {
    text-align: center;
    margin-bottom: 26px;
@@ -85,7 +83,7 @@ input:focus {
    overflow: hidden;
    animation: typing 3s steps(5) 1s forwards;
  }
-
+ 
  .btn {
    padding: 12px 24px;
    margin-top: 4rem;
@@ -97,43 +95,74 @@ input:focus {
    border-radius: 10px;
    cursor: pointer;
    width: 10rem;
-   text-align: center; 
+   text-align: center;
    transition: background-color 0.3s ease, color 0.3s ease;
-   margin-left: auto; 
-   margin-right: auto; 
-}
-.btn:hover {
+   margin-left: auto;
+   margin-right: auto;
+ }
+ 
+ .btn:hover {
    background-color: #39FF14;
    color: black;
    box-shadow: 0 0 15px #39FF14, 0 0 30px #39FF14;
-}
-span {
-  margin: 1.8rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  position: relative;
-  display: inline-block;
-}
+ }
+ 
+ span {
+   margin: 1.8rem;
+   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   position: relative;
+   display: inline-block;
+ }
+ 
+ span a {
+   text-decoration: none;
+   color: white;
+   font-size: 1.2rem;
+   font-weight: bold;
+   padding: 5px 10px;
+   border-radius: 5px;
+   background: linear-gradient(45deg, #39FF14, aqua);
+   box-shadow: 0 4px 6px rgba(0, 255, 0, 0.4);
+   transition: all 0.3s ease;
+ }
+ 
+ span a:hover {
+   color: #000;
+   background: linear-gradient(45deg, aqua, #39FF14);
+   box-shadow: 0 6px 10px rgba(0, 255, 0, 0.6);
+   transform: translateY(-3px);
+ }
+ 
+ span a:active {
+   transform: translateY(1px);
+ }
+ 
+ /* Media Query para responsividade */
+ @media (max-width: 768px) {
+   .div-login {
+     width: 90%;
+     padding: 1.5rem;
+     min-height: auto;
+   }
+ 
+   .typewriter {
+     font-size: 1.5rem;
+   }
+ 
+   input {
+     width: 100%;
+     font-size: 1rem;
+   }
+ 
+   .btn {
+     width: 80%;
+   }
+ 
+   span {
+     font-size: 1rem;
+     margin-top: 2rem;
+   }
+ }
+ 
 
-span a {
-  text-decoration: none; 
-  color: white;
-  font-size: 1.2rem;
-  font-weight: bold;
-  padding: 5px 10px;
-  border-radius: 5px;
-  background: linear-gradient(45deg, #39FF14, aqua); 
-  box-shadow: 0 4px 6px rgba(0, 255, 0, 0.4); 
-  transition: all 0.3s ease;
-}
-
-span a:hover {
-  color: #000;
-  background: linear-gradient(45deg, aqua, #39FF14); 
-  box-shadow: 0 6px 10px rgba(0, 255, 0, 0.6); 
-  transform: translateY(-3px); 
-}
-
-span a:active {
-  transform: translateY(1px);
-}
  </style>
