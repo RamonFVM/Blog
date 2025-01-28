@@ -1,69 +1,116 @@
 <template>
-  
-     <div class="div-login">
-        <form>
-           <h2>Login</h2>
-           <label >Usuario</label>
-           <input type="text">
-           <label>Senha</label>
-           <input type="password">
-        </form>
-     </div>
+   <div class="div-login">
+     <form>
+       <h2 class="typewriter">Login</h2>
+       <label class="typewriter">Usuario</label>
+       <input type="text">
+       <label class="typewriter">Senha</label>
+       <input type="password">
+       <button class="btn">Entrar</button>
+     </form>
+   </div>
+ </template>
 
-</template>
+ 
+ 
+ <style scoped>
 
-<style scoped>
-
-
-.div-login {  
-  background-color: transparent;
-  padding: 2rem;
-  border-radius: 10px;
-  width: 30rem;
-  margin: 50px auto;
-  height: 28rem;
-  border: 3px solid #39FF14;
+ @keyframes typing {
+   from {
+     width: 0;
+   }
+   to {
+     width: 100%;
+   }
+ }
+ 
+ body {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   height: 100vh;
+   margin: 0;
+   background-color: black;
+ }
  
 
+ .div-login {
+   background-color: transparent;
+   padding: 2rem;
+   border-radius: 10px;
+   width: 30rem;
+   margin: 50px auto;
+   height: 28rem;
+   border: 3px solid #39FF14;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+ }
+ 
+ form {
+   display: flex;
+   flex-direction: column;
+ }
+ 
+
+ .typewriter {
+   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+   font-size: 1.8rem;
+   color: #39FF14;
+   white-space: nowrap;
+   overflow: hidden;
+   animation: typing 3s steps(30) 1s forwards;
+ }
+ 
+
+ input {
+   padding: 12px;
+   margin-top: 16px;
+   border: 2px solid #ccc;
+   border-radius: 12px;
+   width: 28rem;
+   height: 1.8rem;
+   font-size: 1.2rem;
+   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+   transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
-  
-}
-
-label {
-  margin-top: 10px;
-  font-weight: bold;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  font-size: 1.8rem;
-  color: #39FF14; 
-  text-shadow: 0 0 5px #39FF14, 0 0 10px #39FF14, 0 0 15px #39FF14; 
-}
-
-input {
-  padding: 10px;
-  margin-top: 16px;
-  border: 1px solid #ccc;
-  border-radius: 16px;
-  width: 28rem;
-  height: 1.3rem;
-  font-size: larger;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-input:focus{
-   border:none;
+input:focus {
+   border-color: #39FF14;
    outline: none;
+   box-shadow: 0 0 12px rgba(57, 255, 20, 0.6);
+   transform: scale(1.02);
 }
+ h2 {
+   text-align: center;
+   margin-bottom: 26px;
+   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+   color: #39FF14;
+   font-size: 2rem;
+   white-space: nowrap;
+   overflow: hidden;
+   animation: typing 3s steps(5) 1s forwards;
+ }
 
-h2 {
-  text-align: center;
-  margin-bottom: 26px;
-  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  color: #39FF14; 
-  font-size: 2rem;
-  text-shadow: 0 0 5px #39FF14, 0 0 10px #39FF14, 0 0 15px #39FF14; 
+ .btn {
+   padding: 12px 24px;
+   margin-top: 4rem;
+   font-size: 1.2rem;
+   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+   background-color: transparent;
+   color: #39FF14;
+   border: 2px solid #39FF14;
+   border-radius: 10px;
+   cursor: pointer;
+   width: 10rem;
+   text-align: center; 
+   transition: background-color 0.3s ease, color 0.3s ease;
+   margin-left: auto; 
+   margin-right: auto; 
 }
-</style>
+.btn:hover {
+   background-color: #39FF14;
+   color: black;
+   box-shadow: 0 0 15px #39FF14, 0 0 30px #39FF14;
+}
+ </style>
