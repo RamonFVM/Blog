@@ -3,11 +3,12 @@
      <form>
        <h2 class="typewriter">Login</h2>
        <label class="typewriter">Usuario</label>
-       <input type="text">
+       <input  type="text">
        <label class="typewriter">Senha</label>
        <input type="password">
        <button class="btn">Entrar</button>
      </form>
+       <span> <router-link to="/registrar">Registrar-se</router-link></span>
    </div>
  </template>
 
@@ -24,18 +25,11 @@
    }
  }
  
- body {
-   display: flex;
-   justify-content: center;
-   align-items: center;
-   height: 100vh;
-   margin: 0;
-   background-color: black;
- }
+
  
 
  .div-login {
-   background-color: transparent;
+   background-color:#202024;
    padding: 2rem;
    border-radius: 10px;
    width: 30rem;
@@ -112,5 +106,34 @@ input:focus {
    background-color: #39FF14;
    color: black;
    box-shadow: 0 0 15px #39FF14, 0 0 30px #39FF14;
+}
+span {
+  margin: 1.8rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  display: inline-block;
+}
+
+span a {
+  text-decoration: none; 
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  background: linear-gradient(45deg, #39FF14, aqua); 
+  box-shadow: 0 4px 6px rgba(0, 255, 0, 0.4); 
+  transition: all 0.3s ease;
+}
+
+span a:hover {
+  color: #000;
+  background: linear-gradient(45deg, aqua, #39FF14); 
+  box-shadow: 0 6px 10px rgba(0, 255, 0, 0.6); 
+  transform: translateY(-3px); 
+}
+
+span a:active {
+  transform: translateY(1px);
 }
  </style>
