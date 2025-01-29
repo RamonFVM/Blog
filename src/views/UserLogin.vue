@@ -4,9 +4,9 @@
      <form>
        <h2 class="typewriter">Login</h2>
        <label class="typewriter">Usuário</label>
-       <input type="text" />
+       <input placeholder="Coloque seu email"  type="text" />
        <label class="typewriter">Senha</label>
-       <input type="password" />
+       <input  placeholder="coloque sua senha" type="password" />
        <button class="btn">Entrar</button>
      </form>
      <span> <router-link to="/registrar">Registrar-se</router-link></span>
@@ -64,6 +64,7 @@
    font-size: 1.2rem;
    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
    transition: box-shadow 0.3s ease, transform 0.3s ease;
+   background-color: #444;  
  }
  
  input:focus {
@@ -72,6 +73,8 @@
    box-shadow: 0 0 12px rgba(57, 255, 20, 0.6);
    transform: scale(1.02);
  }
+
+
  
  h2 {
    text-align: center;
@@ -137,7 +140,7 @@
    transform: translateY(1px);
  }
  
- /* Media Query para responsividade */
+
  @media (max-width: 768px) {
    .div-login {
      width: 90%;
