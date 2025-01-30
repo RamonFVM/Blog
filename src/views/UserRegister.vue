@@ -17,6 +17,12 @@
         <label for="confirm-password">Confirma Senha</label>
         <input v-model="confirmSenha" id="confirm-password" required type="password" />
       </div>
+
+ 
+      <div v-if="erroCadastro" class="error-message">
+        {{ erroCadastro }}
+      </div>
+
       <button type="submit">Cadastrar-se</button>
     </form>
   </div>
@@ -31,41 +37,74 @@ export default {
       nome: '',
       email: '',
       senha: '',
-      confirmSenha: '', 
+      confirmSenha: '',
+      erroCadastro: ''  
     };
   },
   methods: {
+    async verificarEmail() {
+      try {
+        const response = await axios.post('http://localhost:3000/user/check-email', { email: this.email });
+        if (response.data.exists) {
+          this.erroCadastro = 'Email já está em uso!';
+          return false;
+        }
+        return true;
+      } catch (error) {
+        this.erroCadastro = 'Erro ao verificar o email!';
+        return false;
+      }
+    },
+
+    async verificarNome() {
+      try {
+        const response = await axios.post('http://localhost:3000/user/check-name', { name: this.nome });
+        if (response.data.exists) {
+          this.erroCadastro = 'Nome de usuário já está em uso!';
+          return false;
+        }
+        return true;
+      } catch (error) {
+        this.erroCadastro = 'Erro ao verificar o nome!';
+        return false;
+      }
+    },
+
     async registrar() {
-    
       if (this.senha !== this.confirmSenha) {
-        alert('As senhas não coincidem!');
+        this.erroCadastro = 'As senhas não coincidem!';
         return;
       }
 
+      const emailDisponivel = await this.verificarEmail();
+      const nomeDisponivel = await this.verificarNome();
+
+      if (!emailDisponivel || !nomeDisponivel) {
+        return; 
+      }
+
       try {
-      
-         await axios.post('http://localhost:3000/user', {
+        await axios.post('http://localhost:3000/user', {
           name: this.nome,
           email: this.email,
           password: this.senha,
         });
 
-      
         alert('Usuário cadastrado com sucesso!');
-        
-      
+
         this.nome = '';
         this.email = '';
         this.senha = '';
         this.confirmSenha = '';
+        this.erroCadastro = '';  
       } catch (error) {
-
-        alert('Erro ao cadastrar usuário.');
+        this.erroCadastro = error.response?.data?.message || 'Erro ao cadastrar usuário.'; // Exibe a mensagem do backend
       }
     },
   },
 };
 </script>
+
 
 <style scoped>
 .register {
