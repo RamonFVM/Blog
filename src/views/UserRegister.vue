@@ -1,26 +1,71 @@
 <template>
   <div class="register">
-    <form>
+    <form @submit.prevent="registrar">
       <div class="input-group">
         <label for="name">Nome</label>
-        <input id="name" required type="text" />
+        <input v-model="nome" id="name" required type="text" />
       </div>
       <div class="input-group">
         <label for="email">Email</label>
-        <input id="email" required type="email" />
+        <input v-model="email" id="email" required type="email" />
       </div>
       <div class="input-group">
         <label for="password">Senha</label>
-        <input id="password" required type="password" />
+        <input v-model="senha" id="password" required type="password" />
       </div>
       <div class="input-group">
         <label for="confirm-password">Confirma Senha</label>
-        <input id="confirm-password" required type="password" />
+        <input v-model="confirmSenha" id="confirm-password" required type="password" />
       </div>
       <button type="submit">Cadastrar-se</button>
     </form>
   </div>
 </template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      nome: '',
+      email: '',
+      senha: '',
+      confirmSenha: '', 
+    };
+  },
+  methods: {
+    async registrar() {
+    
+      if (this.senha !== this.confirmSenha) {
+        alert('As senhas não coincidem!');
+        return;
+      }
+
+      try {
+      
+         await axios.post('http://localhost:3000/user', {
+          name: this.nome,
+          email: this.email,
+          password: this.senha,
+        });
+
+      
+        alert('Usuário cadastrado com sucesso!');
+        
+      
+        this.nome = '';
+        this.email = '';
+        this.senha = '';
+        this.confirmSenha = '';
+      } catch (error) {
+
+        alert('Erro ao cadastrar usuário.');
+      }
+    },
+  },
+};
+</script>
 
 <style scoped>
 .register {
