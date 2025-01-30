@@ -1,27 +1,24 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { throwError } from 'rxjs';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class UserService {
 
-    constructor(private readonly prisma:PrismaService) {}
-
+    constructor(private readonly prisma: PrismaService) {}
 
     async CreateUser(data: Prisma.UsersCreateInput) {
         try {
             const userExists = await this.prisma.users.findUnique({
                 where: {
-                    email: data.email
+                    name: data.name 
                 }
             });
-    
 
             if (userExists) {
                 throw {
                     statusCode: 400,
-                    message: 'Já existe um usuário com esse email',
+                    message: 'Já existe um usuário com esse nome',
                 };
             }
             await this.prisma.users.create({ data });
@@ -31,7 +28,6 @@ export class UserService {
             };
     
         } catch (error) {
-           
             throw {
                 statusCode: error.statusCode || 500,
                 message: error.message || 'Não foi possível criar o usuário',
@@ -39,67 +35,105 @@ export class UserService {
             };
         }
     }
+    async DeleteUser(name: string) {
+        try {
+          console.log('Tentando deletar usuário com o nome:', name);
+      
         
-
-
-   
-
-    async DeleteUser(email: string) {
-        try {
-            const user = await this.prisma.users.findUnique({
-                where: {
-                    email: email
-                }
-            });
-    
-            if (!user) {
-                throw{
-                    statusCode:400, message: 'usuario não encontrado'
-                }
-            }
-
-            await this.prisma.users.delete({
-                where: {
-                    email: email
-                }
-
+          const user = await this.prisma.users.findUnique({
+            where: {
+              name: name, 
+            },
+          });
+      
+          if (!user) {
             
-             });
-
-             return{
-                statusCode:200,
-                message:'Usuario deletado com sucesso'
-             }
+            throw {
+              statusCode: 404, 
+              message: 'Usuário não encontrado',
+            };
+          }
+      
+          await this.prisma.users.delete({
+            where: {
+              name: name,
+            },
+          });
+      
+          return {
+            statusCode: 200,
+            message: 'Usuário deletado com sucesso',
+          };
         } catch (error) {
-            throw{
-                statusCode: 500, 
-                message: 'Não foi possível deletar o usuario', 
-                originalError: error.message 
-
-            }
-           
+          throw {
+            statusCode: error.statusCode || 500,
+            message: error.message || 'Não foi possível deletar o usuário',
+            originalError: error.originalError || error.message,
+          };
         }
-    }
-    async ValidationLogin(email: string, password: string) {
+      }
+
+      
+    async ValidationLogin(name: string, password: string) { 
         try {
             const user = await this.prisma.users.findUnique({
                 where: {
-                    email: email,
+                    name: name, 
                     password: password
                 }
             });
-    
+
             if (!user) {
-                throw { statusCode: 404, message: 'Usuário não encontrado' };
+                throw { 
+                    statusCode: 404, message: 'Usuário não encontrado' };
             } else {
                 return user;
             }
-    
+
         } catch (error) {
             throw { 
                 statusCode: 500, 
                 message: 'Não foi possível achar o usuário', 
                 originalError: error.message 
+            };
+        }
+    }async UpdateUser(name: string, newPassword: string) { 
+        try {
+    
+            const user = await this.prisma.users.findUnique({
+                where: {
+                    name: name,  
+                },
+            });
+    
+            if (!user) {
+                throw {
+                    statusCode: 404,
+                    message: 'Usuário não encontrado',
+                };
+            }
+    
+            const updatedUser = await this.prisma.users.update({
+                where: {
+                    name: name,  
+                },
+                data: {
+                    password: newPassword, 
+                },
+            });
+    
+            return {
+                statusCode: 200,
+                message: 'Usuário atualizado com sucesso',
+                updatedUser,
+            };
+    
+        } catch (error) {
+    
+            throw {
+                statusCode: error.statusCode || 500,
+                message: error.message || 'Não foi possível atualizar o usuário',
+                originalError: error.originalError || error.message,
             };
         }
     }

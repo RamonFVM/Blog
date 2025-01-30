@@ -12,15 +12,14 @@ datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
 }
-
 model Users {
-  id        String   @id @default(cuid())  // Identificador único
-  name      String
-  email     String   @unique               // Email único
+  id        String   @id @default(cuid())  
+  name      String   @unique     
+  email     String   @unique     
   password  String
-  createdAt DateTime @default(now())        // Data de criação
-  updatedAt DateTime @updatedAt            // Data de atualização (atualiza automaticamente)
-  posts     Post[]
+  createdAt DateTime @default(now())        
+  updatedAt DateTime @updatedAt            
+  posts     Post[]   
 }
 
 model Post {
@@ -29,6 +28,5 @@ model Post {
   createdAt DateTime @default(now())       
   updatedAt DateTime @updatedAt            
   userId    String
-  user      Users    @relation(fields: [userId], references: [id]) 
+  user      Users    @relation(fields: [userId], references: [id], onDelete: Cascade)  
 }
-

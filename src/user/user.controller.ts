@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Post, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -12,15 +12,21 @@ export class UserController {
     return await this.userService.CreateUser(body)
      
   }
-
+ 
   @Delete()
-  async deleteUser(@Body() body: { email: string }) {
-    return await this.userService.DeleteUser(body.email); 
+  async deleteUser(@Body() body: { name: string }) {
+    return await this.userService.DeleteUser(body.name);  
   }
 
+ 
   @Post('validar')
+  async ValidateUser(@Body() body: { name: string, password: string }) {
+    return await this.userService.ValidationLogin(body.name, body.password); 
+  }
 
-   async ValidateUser(@Body() body:{email:string, password:string }){
-    return await this.userService.ValidationLogin(body.email, body.password)
+
+  @Put()
+  async UpdateUser(@Body() body: { name: string, password: string }) {
+    return await this.userService.UpdateUser(body.name, body.password); 
   }
 }
