@@ -6,22 +6,40 @@ import { PrismaService } from 'src/database/prisma.service';
 export class UserService {
 
     constructor(private readonly prisma: PrismaService) {}
-
     async CreateUser(data: Prisma.UsersCreateInput) {
         try {
+           
             const userExists = await this.prisma.users.findUnique({
                 where: {
-                    name: data.name 
-                }
+                    name: data.name,
+                },
             });
-
+    
+            const emailExists = await this.prisma.users.findUnique({
+                where: {
+                    email: data.email,
+                },
+            });
+    
+          
+            if (emailExists) {
+                throw {
+                    statusCode: 400,
+                    message: 'Já existe um usuário com esse e-mail',
+                };
+            }
+    
+          
             if (userExists) {
                 throw {
                     statusCode: 400,
                     message: 'Já existe um usuário com esse nome',
                 };
             }
+    
+         
             await this.prisma.users.create({ data });
+    
             return {
                 statusCode: 200,
                 message: 'Usuário criado com sucesso',
@@ -97,7 +115,10 @@ export class UserService {
                 originalError: error.message 
             };
         }
-    }async UpdateUser(name: string, newPassword: string) { 
+
+    }
+    
+    async UpdateUser(name: string, newPassword: string) { 
         try {
     
             const user = await this.prisma.users.findUnique({
