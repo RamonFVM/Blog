@@ -55,7 +55,7 @@ export class UserService {
     }
     async DeleteUser(name: string) {
         try {
-          console.log('Tentando deletar usuário com o nome:', name);
+         
       
         
           const user = await this.prisma.users.findUnique({
