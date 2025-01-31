@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Post, Put, HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
-
+import { UnauthorizedException } from '@nestjs/common';
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -42,9 +42,31 @@ export class UserController {
     return await this.userService.DeleteUser(body.name);  
   }
 
+ 
   @Post('validar')
   async ValidateUser(@Body() body: { name: string, password: string }) {
-    return await this.userService.ValidationLogin(body.name, body.password); 
+    try {
+      
+      const user = await this.userService.ValidationLogin(body.name, body.password);
+
+      if(user){
+        return {
+          statusCode: 201,
+          message: 'Login bem-sucedido ',
+          user,
+        };
+      }else{
+           
+        throw{
+          statusCode:404,
+          message:'usuario ou senhas incorreto'
+
+        }
+       
+      }
+    } catch (error) {
+      throw new UnauthorizedException(error.message || 'Erro ao autenticar o usuário');
+    }
   }
 
   @Put()

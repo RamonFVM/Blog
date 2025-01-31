@@ -67,16 +67,19 @@ export class UserService {
       const user = await this.prisma.users.findUnique({
         where: { name },
       });
-
-      if (!user || user.password !== password) {
-        throw { message: 'Usuário ou senha incorretos', statusCode: 404 }; 
+  
+      if (!user) {
+        throw new Error('Usuário ou senha incorreto');
       }
-
+  
+      if (user.password !== password) {
+        throw new Error('Usuário ou senha incorretos');
+      }
       return user;
     } catch (error) {
-      throw error || 'Erro ao autenticar o usuário';
+      throw error  
     }
-  }
+  } 
 
   async UpdateUser(name: string, newPassword: string) {
     try {
