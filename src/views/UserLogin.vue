@@ -44,14 +44,13 @@ export default {
             password: this.senha 
           });
 
-       
           if (response.data && response.status===201) {
 
             
-            console.log("Usuário logado com sucesso!");
             this.$router.push('/Home'); 
           }
         } catch (error) {
+        
             this.errorLogin = error.response.data.message || 'Erro ao tentar logar!';
           
         }
