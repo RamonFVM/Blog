@@ -10,7 +10,7 @@
       <button class="btn">Entrar</button>
     </form>
 
-    <!-- Exibir mensagem de erro -->
+
     <div v-if="errorLogin" class="error-message">
       {{ errorLogin }}
     </div>
@@ -49,7 +49,7 @@ export default {
 
             
             console.log("Usuário logado com sucesso!");
-            this.$router.push('/registrar'); 
+            this.$router.push('/Home'); 
           }
         } catch (error) {
           
@@ -74,6 +74,7 @@ export default {
   color: red;
   font-size: 14px;
   margin-top: 10px;
+  text-shadow: 0 0 5px red, 0 0 10px red, 0 0 15px red;
 }
 
   

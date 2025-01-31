@@ -107,6 +107,14 @@ export default {
 
 
 <style scoped>
+
+.error-message{
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+  text-shadow: 0 0 5px red, 0 0 10px red, 0 0 15px red;
+
+}
 .register {
   background-color: #202024;
   padding: 2rem;
