@@ -1,29 +1,80 @@
 <template>
-   <MyHeader />
-   <div class="div-login">
-     <form>
-       <h2 class="typewriter">Login</h2>
-       <label class="typewriter">Usuário</label>
-       <input placeholder="Coloque seu email"  type="text" />
-       <label class="typewriter">Senha</label>
-       <input  placeholder="coloque sua senha" type="password" />
-       <button class="btn">Entrar</button>
-     </form>
-     <span> <router-link to="/registrar">Registrar-se</router-link></span>
-   </div>
- </template>
- 
- <script>
- import MyHeader from '@/components/Header/MyHeader.vue';
- 
- export default {
-   components: {
-     MyHeader,
-   },
- }
- </script>
- 
+  <MyHeader />
+  <div class="div-login">
+    <form @submit.prevent="logar">
+      <h2 class="typewriter">Login</h2>
+      <label class="typewriter">Usuário</label>
+      <input v-model="login" placeholder="Coloque seu email" required type="text" />
+      <label class="typewriter">Senha</label>
+      <input v-model="senha" placeholder="Coloque sua senha" required type="password" />
+      <button class="btn">Entrar</button>
+    </form>
+
+    <!-- Exibir mensagem de erro -->
+    <div v-if="errorLogin" class="error-message">
+      {{ errorLogin }}
+    </div>
+
+    <span> <router-link to="/registrar">Registrar-se</router-link></span>
+  </div>
+</template>
+
+<script>
+import MyHeader from '@/components/Header/MyHeader.vue';
+import axios from 'axios';
+
+export default {
+  components: {
+    MyHeader,
+  },
+  data() {
+    return {
+      senha: '',     
+      login: '',     
+      errorLogin: '' 
+    };
+  },
+  methods: {
+    async logar() {
+      if (this.senha && this.login) {
+        try {
+         
+          const response = await axios.post('http://localhost:3000/user/validar', {
+            name: this.login,  
+            password: this.senha 
+          });
+
+       
+          if (response.data && response.status===201) {
+
+            
+            console.log("Usuário logado com sucesso!");
+            this.$router.push('/registrar'); 
+          }
+        } catch (error) {
+          
+          if (error.response && error.response.data) {
+           
+            this.errorLogin = error.response.data.message || 'Erro ao tentar logar!';
+          } else {
+            this.errorLogin = 'Erro ao tentar logar!';
+          }
+        }
+      } else {
+        this.errorLogin = 'Por favor, preencha ambos os campos de usuário e senha!';
+      }
+    }
+  }
+};
+</script>
+
  <style scoped>
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
 
   
  .div-login {

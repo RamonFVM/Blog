@@ -98,7 +98,7 @@ export default {
         this.confirmSenha = '';
         this.erroCadastro = '';  
       } catch (error) {
-        this.erroCadastro = error.response?.data?.message || 'Erro ao cadastrar usuário.'; // Exibe a mensagem do backend
+        this.erroCadastro = error.response?.data?.message || 'Erro ao cadastrar usuário.'; 
       }
     },
   },
