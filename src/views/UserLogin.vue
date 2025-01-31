@@ -15,7 +15,7 @@
       {{ errorLogin }}
     </div>
 
-    <span> <router-link to="/registrar">Registrar-se</router-link></span>
+    <span> <router-link to="/registrar">Cadastrar-se</router-link></span>
   </div>
 </template>
 
@@ -52,13 +52,8 @@ export default {
             this.$router.push('/Home'); 
           }
         } catch (error) {
-          
-          if (error.response && error.response.data) {
-           
             this.errorLogin = error.response.data.message || 'Erro ao tentar logar!';
-          } else {
-            this.errorLogin = 'Erro ao tentar logar!';
-          }
+          
         }
       } else {
         this.errorLogin = 'Por favor, preencha ambos os campos de usuário e senha!';

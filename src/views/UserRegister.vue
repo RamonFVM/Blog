@@ -25,6 +25,7 @@
 
       <button type="submit">Cadastrar-se</button>
     </form>
+        <span> <router-link to="/">Entrar</router-link></span>
   </div>
 </template>
 
@@ -107,7 +108,31 @@ export default {
 
 
 <style scoped>
-
+span {
+   margin: 1.8rem;
+   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+   position: relative;
+   display: inline-block;
+ }
+ 
+ span a {
+   text-decoration: none;
+   color: white;
+   font-size: 1.2rem;
+   font-weight: bold;
+   padding: 5px 10px;
+   border-radius: 5px;
+   background: linear-gradient(45deg, #39FF14, aqua);
+   box-shadow: 0 4px 6px rgba(0, 255, 0, 0.4);
+   transition: all 0.3s ease;
+ }
+ 
+ span a:hover {
+   color: #000;
+   background: linear-gradient(45deg, aqua, #39FF14);
+   box-shadow: 0 6px 10px rgba(0, 255, 0, 0.6);
+   transform: translateY(-3px);
+ }
 .error-message{
   color: red;
   font-size: 14px;
