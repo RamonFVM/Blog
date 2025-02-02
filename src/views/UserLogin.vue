@@ -39,7 +39,7 @@ export default {
       if (this.senha && this.login) {
         try {
          
-          const response = await axios.post('http://localhost:3000/user/validar', {
+          const response = await axios.post('http://localhost:3000/auth', {
             name: this.login,  
             password: this.senha 
           });
@@ -212,6 +212,4 @@ export default {
      margin-top: 2rem;
    }
  }
- 
-
  </style>
