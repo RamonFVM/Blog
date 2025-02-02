@@ -1,6 +1,6 @@
 <template>
     <div class="Header">
-      <h1 class="typewriter">Faça seu Blog aqui</h1>
+      <h1 class="typewriter">Seu Forum Online</h1>
     </div>
   </template>
   
