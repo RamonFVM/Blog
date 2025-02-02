@@ -4,7 +4,7 @@
     <form @submit.prevent="logar">
       <h2 class="typewriter">Login</h2>
       <label class="typewriter">Usuário</label>
-      <input v-model="login" placeholder="Coloque seu email" required type="text" />
+      <input v-model="login" placeholder="Coloque seu login" required type="text" />
       <label class="typewriter">Senha</label>
       <input v-model="senha" placeholder="Coloque sua senha" required type="password" />
       <button class="btn">Entrar</button>
@@ -45,9 +45,15 @@ export default {
           });
 
           if (response.data && response.status===201) {
-
+            const token = response.data.user.access_token; 
             
-            this.$router.push('/Home'); 
+            if(token){
+             
+              localStorage.setItem('authToken', token);
+              this.$router.push('/Home'); 
+
+            }
+           
           }
         } catch (error) {
         
