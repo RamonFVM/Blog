@@ -1,12 +1,15 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { UserService } from 'src/user/user.service';
-
+import { JwtService } from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService,
+             private readonly jwtService: JwtService,
+  ) {}
 
-  async  validateLogin(name: string, password: string) {
+
+  async  validateLogin(name: string, password: string){
  
     const user = await this.userService.findOneByName(name);
 
@@ -20,6 +23,10 @@ export class AuthService {
       throw new UnauthorizedException('Usuário ou senha incorretos');
     }
 
-    return user;
+    const payload ={sub: user.id}
+
+    return {access_token: await this.jwtService.signAsync(payload)}
+
+  
   }
 }
