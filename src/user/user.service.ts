@@ -98,4 +98,4 @@ export class UserService {
       throw error || 'Não foi possível atualizar o usuário';
     }
   }
-}
+}  

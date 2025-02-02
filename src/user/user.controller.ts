@@ -25,18 +25,6 @@ export class UserController {
     }
   }
 
-  @Post('check-email')
-  async checkEmail(@Body() body: { email: string }) {
-    const exists = await this.userService.checkEmailExists(body.email);
-    return { exists };
-  }
-
-  @Post('check-name')
-  async checkName(@Body() body: { name: string }) {
-    const exists = await this.userService.checkNameExists(body.name);
-    return { exists };
-  }
-
   @Delete()
   async deleteUser(@Body() body: { name: string }) {
     return await this.userService.DeleteUser(body.name);  

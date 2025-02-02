@@ -6,7 +6,7 @@ import { UserService } from 'src/user/user.service';
 export class AuthService {
   constructor(private readonly userService: UserService) {}
 
-  async validateLogin(name: string, password: string) {
+  async  validateLogin(name: string, password: string) {
  
     const user = await this.userService.findOneByName(name);
 
