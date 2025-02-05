@@ -20,6 +20,7 @@
       <div v-for="post in posts" :key="post.id" class="post">
         <p><strong>{{ post.username }}:</strong> {{ post.content }}</p>
         <p><em>Publicado em: {{ formatDate(post.createdAt) }}</em></p>
+         <button class="button-delete" @click="deletar(post.id)">excluir</button>
       </div>
     </div>
   </div>
@@ -64,6 +65,7 @@ export default {
 
           const response = await axios.get(`http://localhost:3000/post/${username}`);
           this.posts = response.data;
+          this.posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         } catch (error) {
           console.error("Erro ao carregar posts:", error);
         }
@@ -123,7 +125,20 @@ export default {
           this.errorMessage = "Erro ao tentar deslogar";
         }
       }
-    }
+    },
+    async deletar(postId) {
+  try {
+
+   await axios.delete(`http://localhost:3000/post/${postId}`);
+
+    this.posts = this.posts.filter(post => post.id !== postId);
+    
+    console.log(`Post com ID ${postId} deletado com sucesso!`);
+  } catch (error) {
+    console.error("Erro ao tentar deletar o post:", error);
+    this.errorMessage = "Erro ao tentar deletar o post.";
+  }
+}
   }
 };
 
@@ -278,6 +293,22 @@ export default {
   background-color: #ff4747;
   color: white;
   border-radius: 8px;
+}
+.button-delete {
+  color: white;
+  margin: 2rem;
+  background-color: #ff4747;
+  border-radius: 8px;
+  width: 5rem;
+  padding: 8px;
+  font-family: Arial, Helvetica, sans-serif;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s ease-in-out; 
+}
+
+.button-delete:hover {
+  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.4); 
+  transform: translateY(-2px); 
 }
 
 
