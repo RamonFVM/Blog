@@ -7,11 +7,46 @@
             <input type="password">
             <label>Confirme a Senha</label>
             <input type="password">
+            <button>Salvar</button>
         </form>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
+
+export default{
+  data(){
+    return{
+      NewName:'',
+      NewPassword:''
+    }
+ 
+  },
+  methods:{
+    async AlterarUser(){
+      if(this.NewName || this.NewPassoword){
+
+        try{
+          const payload={}
+
+        if(this.NewName){
+          payload.name=this.NewName
+        }
+        if(this.NewPassword){
+          payload.password=this.NewPassword
+        }
+       
+
+          const response= await axios.put('http://localhost:3000/user', payload)
+
+        }catch(error){
+
+        }
+      }
+    }
+  }
+}
 
 
 </script>
