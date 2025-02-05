@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <header class="Header">
-      <button class="logout-btn">Sair</button>
+      <button class="logout-btn" @click="Logout()">Sair</button>
       <span class="welcome-msg">Seja Bem Vindo, {{ username }}</span>
       <button class="edit-profile-btn">Editar Perfil</button>
     </header>
@@ -11,14 +11,15 @@
       <input v-model="Posts" type="text" id="comment" placeholder="Escreva seu comentário..." />
       <button class="comment-btn" @click="CreatePost()">Publicar</button>
 
-      <!-- Exibe uma mensagem caso o campo de comentário esteja vazio -->
       <div v-if="errorMessage" class="error-message">
         <p>{{ errorMessage }}</p>
       </div>
+    </div>
 
-      <!-- Exibe a pré-visualização do post -->
-      <div v-if="Posts" class="post-preview">
-        <p>Pré-visualização: {{ Posts }}</p>
+    <div class="posts-list">
+      <div v-for="post in posts" :key="post.id" class="post">
+        <p><strong>{{ post.username }}:</strong> {{ post.content }}</p>
+        <p><em>Publicado em: {{ formatDate(post.createdAt) }}</em></p>
       </div>
     </div>
   </div>
@@ -34,17 +35,16 @@ export default {
       username: '',
       Posts: '', 
       errorMessage: '', 
+      posts: [], 
     };
   },
   created() {
     this.loadUserInfo();
+    this.loadPosts(); 
   },
   methods: {
     loadUserInfo() {
       const token = localStorage.getItem('authToken');
-    
-    
-      
       if (token) {
         try {
           const decodedToken = jwt_decode(token);
@@ -54,49 +54,122 @@ export default {
         }
       }
     },
+
+    async loadPosts() {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        try {
+          const decodedToken = jwt_decode(token);
+          const username = decodedToken.username;
+
+          const response = await axios.get(`http://localhost:3000/post/${username}`);
+          this.posts = response.data;
+        } catch (error) {
+          console.error("Erro ao carregar posts:", error);
+        }
+      }
+    },
+
     async CreatePost() {
-  const token = localStorage.getItem('authToken');  
-  if (token) {
-    try {
-      const decodedToken = jwt_decode(token); 
-      const userId = decodedToken.sub;  
+      const token = localStorage.getItem('authToken');  
 
-
-      console.log("oi" + token)
-      if (!this.Posts.trim()) {
-        this.errorMessage = "Por favor, escreva algo no campo de comentário.";
+      if (!token) {
+        this.errorMessage = "Token de autenticação não encontrado!";
         return;
       }
 
-    
-      this.errorMessage = '';
+      try {
+        const decodedToken = jwt_decode(token); 
+        const userId = decodedToken.sub;
 
-   
-      const response = await axios.post('http://localhost:3000/post', {
-        content: this.Posts, 
-        userId: userId,  
-      });
+        if (!this.Posts.trim()) {
+          this.errorMessage = "Por favor, escreva algo no campo de comentário.";
+          return;
+        }
 
-      
-      console.log(response.data);
+        this.errorMessage = '';
 
-      
-      this.Posts = '';
-    } catch (error) {
-      console.error("Erro ao processar a requisição:", error);
+        const response = await axios.post('http://localhost:3000/post', {
+          content: this.Posts,
+          userId: userId,
+        });
+
+        this.posts.push({
+          id: response.data.id, 
+          username: this.username,
+          content: this.Posts,
+          createdAt: response.data.createdAt,  
+        });
+
+        this.Posts = '';
+      } catch (error) {
+        console.error("Erro ao processar a requisição:", error);
+        this.errorMessage = "Erro ao publicar o post. Tente novamente.";
+      }
+    },
+
+    formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR');
+    },
+
+    async Logout() {
+      const token = localStorage.getItem("authToken");
+      if (token) {
+        try {
+          localStorage.removeItem("authToken");
+          this.$router.push("/"); 
+        } catch (error) {
+          this.errorMessage = "Erro ao tentar deslogar";
+        }
+      }
     }
   }
-}
-
-  }
 };
-</script>
 
+</script>
 <style scoped>
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+}
+
+.posts-list {
+  background-color: #202024;
+  border-radius: 16px;
+  padding: 2rem;
+  margin: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.post {
+  background-color: #2c2f36;
+  padding: 20px;
+  border-radius: 12px; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+  transition: transform 0.3s ease, box-shadow 0.3s ease; 
+  color: #39FF14;
+}
+
+.post:hover {
+  transform: translateY(-5px); 
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); 
+}
+
+.post-header {
+  font-size: 18px;
+  font-weight: bold;
+  color: #1DA1F2; 
+  margin-bottom: 10px;
+}
+
+.post-content {
+  font-size: 16px;
+  color: #444;
+  line-height: 1.5;
 }
 
 .Header {
@@ -207,12 +280,5 @@ export default {
   border-radius: 8px;
 }
 
-.post-preview {
-  margin-top: 2rem;
-  padding: 1rem;
-  background-color: #2c2f36;
-  border-radius: 8px;
-  color: white;
-  font-size: 1rem;
-}
+
 </style>
