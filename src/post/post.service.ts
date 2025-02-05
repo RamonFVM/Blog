@@ -1,44 +1,63 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class PostService {
-    constructor(private readonly prisma:PrismaService){}
+  constructor(private readonly prisma: PrismaService) { }
+  async CreatePost(content: string, userId: string) {
 
-    async CreatePost( Content:Prisma.PostCreateInput){
-       const post= await this.prisma.post.create({
-            data:Content
-        });
-        
-        return post
-       
-   
-}
-   async DeletePost(postId: string){
-
-    try{
-        const post =await this.prisma.post.findUnique({
-            where:{id:postId}
-        })
-    
-        if(!post){
-            throw{
-                statusCode:404,
-                message:'Post não encontrado'
-            }
-        }
-
-        await this.prisma.post.delete({
-            where:{id:postId}
-        })
-            
-    }catch(error){
-        throw error 
+    if (!userId) {
+      throw new Error('Requer Id do usuario');
     }
 
-   
-}
+
+    const post = await this.prisma.post.create({
+      data: {
+        content: content,
+        user: {
+          connect: { id: userId },
+        },
+      },
+    });
+
+    return post;
+  }
+
+
+  async DeletePost(postId: string) {
+
+    try {
+      const post = await this.prisma.post.findUnique({
+        where: { id: postId }
+      })
+
+      if (!post) {
+        throw {
+          statusCode: 404,
+          message: 'Post não encontrado'
+        }
+      }
+
+      await this.prisma.post.delete({
+        where: { id: postId }
+      })
+
+    } catch (error) {
+      throw error
+    }
+
+
+
+  }
+  async GetPostByUsername(username: string) {
+    return this.prisma.post.findMany({
+      where: {
+        user: {
+          name: username,  
+        },
+      },
+    });
+  }
 
 }
 
