@@ -3,7 +3,7 @@
     <header class="Header">
       <button class="logout-btn" @click="Logout()">Sair</button>
       <span class="welcome-msg">Seja Bem Vindo, {{ username }}</span>
-      <button class="edit-profile-btn">Editar Perfil</button>
+      <button  @click="formedit()" class="edit-profile-btn">Editar Perfil</button>
     </header>
 
     <div class="forum">
@@ -24,19 +24,28 @@
       </div>
     </div>
   </div>
+              <div v-if="revel==true">
+                <CardComponent/>
+
+              </div>
 </template>
 
 <script>
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
+import CardComponent  from  '@/components/Card/CardComponent.vue';
 
 export default {
+  components: {
+    CardComponent
+  },
   data() {
     return {
       username: '',
       Posts: '', 
       errorMessage: '', 
       posts: [], 
+      revel:false
     };
   },
   created() {
@@ -138,7 +147,11 @@ export default {
     console.error("Erro ao tentar deletar o post:", error);
     this.errorMessage = "Erro ao tentar deletar o post.";
   }
-}
+},
+    formedit(){
+      this.revel=true
+    }
+  
   }
 };
 
