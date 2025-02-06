@@ -3,7 +3,7 @@
     <header class="Header">
       <button class="logout-btn" @click="Logout()">Sair</button>
       <span class="welcome-msg">Seja Bem Vindo, {{ username }}</span>
-      <button  @click="formedit()" class="edit-profile-btn">Editar Perfil</button>
+      <button  @click="formedit()" class="edit-profile-btn">Editar Senha</button>
     </header>
 
     <div class="forum">
@@ -26,7 +26,6 @@
   </div>
               <div v-if="revel==true">
                 <CardComponent/>
-
               </div>
 </template>
 
@@ -142,7 +141,7 @@ export default {
 
     this.posts = this.posts.filter(post => post.id !== postId);
     
-    console.log(`Post com ID ${postId} deletado com sucesso!`);
+  
   } catch (error) {
     console.error("Erro ao tentar deletar o post:", error);
     this.errorMessage = "Erro ao tentar deletar o post.";
@@ -213,17 +212,20 @@ export default {
 
 .logout-btn, .edit-profile-btn {
   padding: 0.8rem 1.5rem;
-  background-color: #007bff;
+  background-color: #39FF14;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
   transition: background-color 0.3s;
+  transition: all 0.3s ease-in;
 }
 
 .logout-btn:hover, .edit-profile-btn:hover {
-  background-color: #0056b3;
+  box-shadow: 0 0 12px rgba(57, 255, 20, 0.6); ;
+ transform: scale(1.1);
+
 }
 
 .welcome-msg {
