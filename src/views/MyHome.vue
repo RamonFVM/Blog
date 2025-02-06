@@ -3,7 +3,7 @@
     <header class="Header">
       <button class="logout-btn" @click="Logout()">Sair</button>
       <span class="welcome-msg">Seja Bem Vindo, {{ username }}</span>
-      <button  @click="formedit()" class="edit-profile-btn">Editar Senha</button>
+      <button @click="formedit()" class="edit-profile-btn">Editar Senha</button>
     </header>
 
     <div class="forum">
@@ -20,36 +20,53 @@
       <div v-for="post in posts" :key="post.id" class="post">
         <p><strong>{{ post.username }}:</strong> {{ post.content }}</p>
         <p><em>Publicado em: {{ formatDate(post.createdAt) }}</em></p>
-         <button class="button-delete" @click="deletar(post.id)">excluir</button>
+        <button class="button-delete" @click="deletar(post.id)">excluir</button>
       </div>
     </div>
   </div>
-              <div v-if="revel==true">
-                <CardComponent/>
-              </div>
+
+  <div v-if="revel == true">
+    <div class="overlay">
+      <div class="Card">
+        <button @click="revel = false" class="close-btn">X</button>
+        <form @submit.prevent="AlterarUser">
+          <label>Senha nova</label>
+          <input type="password" v-model="NewPassword" />
+
+          <label>Confirme a Senha</label>
+          <input type="password" v-model="ConfirmPassword" />
+
+          <button type="submit">Salvar</button>
+
+          <div v-if=" errorMessageform" class="error">{{ errorMessageform}}</div>
+          <div v-if="successMessage" class="success">{{ successMessage }}</div>
+        </form>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 import jwt_decode from 'jwt-decode';
 import axios from 'axios';
-import CardComponent  from  '@/components/Card/CardComponent.vue';
 
 export default {
-  components: {
-    CardComponent
-  },
   data() {
     return {
       username: '',
-      Posts: '', 
-      errorMessage: '', 
-      posts: [], 
-      revel:false
+      Posts: '',
+      errorMessageform:'',
+      errorMessage: '',
+      successMessage: '',
+      posts: [],
+      revel: false,
+      NewPassword: '',
+      ConfirmPassword: '',
     };
   },
   created() {
     this.loadUserInfo();
-    this.loadPosts(); 
+    this.loadPosts();
   },
   methods: {
     loadUserInfo() {
@@ -81,7 +98,7 @@ export default {
     },
 
     async CreatePost() {
-      const token = localStorage.getItem('authToken');  
+      const token = localStorage.getItem('authToken');
 
       if (!token) {
         this.errorMessage = "Token de autenticação não encontrado!";
@@ -89,7 +106,7 @@ export default {
       }
 
       try {
-        const decodedToken = jwt_decode(token); 
+        const decodedToken = jwt_decode(token);
         const userId = decodedToken.sub;
 
         if (!this.Posts.trim()) {
@@ -105,10 +122,10 @@ export default {
         });
 
         this.posts.push({
-          id: response.data.id, 
+          id: response.data.id,
           username: this.username,
           content: this.Posts,
-          createdAt: response.data.createdAt,  
+          createdAt: response.data.createdAt,
         });
 
         this.Posts = '';
@@ -128,33 +145,70 @@ export default {
       if (token) {
         try {
           localStorage.removeItem("authToken");
-          this.$router.push("/"); 
+          this.$router.push("/");
         } catch (error) {
           this.errorMessage = "Erro ao tentar deslogar";
         }
       }
     },
     async deletar(postId) {
-  try {
+      try {
+        await axios.delete(`http://localhost:3000/post/${postId}`);
+        this.posts = this.posts.filter(post => post.id !== postId);
+      } catch (error) {
+        console.error("Erro ao tentar deletar o post:", error);
+        this.errorMessage = "Erro ao tentar deletar o post.";
+      }
+    },
 
-   await axios.delete(`http://localhost:3000/post/${postId}`);
+    formedit() {
+      this.revel = true;
+    },
 
-    this.posts = this.posts.filter(post => post.id !== postId);
-    
-  
-  } catch (error) {
-    console.error("Erro ao tentar deletar o post:", error);
-    this.errorMessage = "Erro ao tentar deletar o post.";
-  }
-},
-    formedit(){
-      this.revel=true
-    }
-  
-  }
+    async AlterarUser() {
+      this.errorMessage = '';
+      this.successMessage = '';
+
+      if (!this.NewPassword) {
+        this.errorMessage = "Você precisa colocar uma nova senha.";
+        return;
+      }
+
+      if (this.NewPassword !== this.ConfirmPassword) {
+        this.errorMessageform = 'As senhas não coincidem.';
+        return;
+      }
+
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        this.errorMessageform= 'Token de autenticação não encontrado.';
+        return;
+      }
+
+      try {
+        const decodedToken = jwt_decode(token);
+        const username = decodedToken.username;
+
+        const data = {
+          password: this.NewPassword,
+          name: username,
+        };
+
+        const response = await axios.put('http://localhost:3000/user', data);
+
+        if (response.status === 200) {
+          this.successMessage = 'Senha atualizada com sucesso!';
+        } else {
+          this.errorMessageform = 'Erro ao atualizar a senha.';
+        }
+      } catch (error) {
+        this.errorMessageform = 'Erro ao processar a solicitação. Tente novamente mais tarde.';
+      }
+    },
+  },
 };
-
 </script>
+
 <style scoped>
 .container {
   max-width: 1200px;
@@ -175,28 +229,15 @@ export default {
 .post {
   background-color: #2c2f36;
   padding: 20px;
-  border-radius: 12px; 
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-  transition: transform 0.3s ease, box-shadow 0.3s ease; 
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   color: white;
 }
 
 .post:hover {
-  transform: translateY(-5px); 
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); 
-}
-
-.post-header {
-  font-size: 18px;
-  font-weight: bold;
-  color: #1DA1F2; 
-  margin-bottom: 10px;
-}
-
-.post-content {
-  font-size: 16px;
-  color: #444;
-  line-height: 1.5;
+  transform: translateY(-5px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 
 .Header {
@@ -210,7 +251,8 @@ export default {
   margin-bottom: 2rem;
 }
 
-.logout-btn, .edit-profile-btn {
+.logout-btn,
+.edit-profile-btn {
   padding: 0.8rem 1.5rem;
   background-color: #39FF14;
   color: white;
@@ -222,10 +264,10 @@ export default {
   transition: all 0.3s ease-in;
 }
 
-.logout-btn:hover, .edit-profile-btn:hover {
-  box-shadow: 0 0 12px rgba(57, 255, 20, 0.6); ;
- transform: scale(1.1);
-
+.logout-btn:hover,
+.edit-profile-btn:hover {
+  box-shadow: 0 0 12px rgba(57, 255, 20, 0.6);
+  transform: scale(1.1);
 }
 
 .welcome-msg {
@@ -276,7 +318,6 @@ export default {
   font-size: 1.1rem;
   transition: background-color 0.3s;
   height: 3rem;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .comment-btn:hover {
@@ -293,7 +334,6 @@ export default {
   border-radius: 8px;
   margin-top: 1rem;
   text-transform: capitalize;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
 .username-span:hover {
@@ -309,6 +349,7 @@ export default {
   color: white;
   border-radius: 8px;
 }
+
 .button-delete {
   color: white;
   margin: 2rem;
@@ -316,15 +357,95 @@ export default {
   border-radius: 8px;
   width: 5rem;
   padding: 8px;
-  font-family: Arial, Helvetica, sans-serif;
-  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
-  transition: all 0.4s ease-in-out; 
 }
 
-.button-delete:hover {
-  box-shadow: 0px 12px 24px rgba(0, 0, 0, 0.4); 
-  transform: translateY(-2px); 
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 998;
 }
 
+.Card {
+  background-color: #202024;
+  padding: 2rem;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  z-index: 999;
+  width: 300px;
+  position: relative;
+}
 
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #39FF14;
+}
+
+input {
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  border: 1px solid #39FF14;
+  border-radius: 4px;
+  background-color: #2c2f36;
+  outline: none;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: chartreuse;
+}
+
+.error {
+  text-shadow: 0 0 5px red, 0 0 10px red, 0 0 15px red;
+  color: red;
+}
+
+.success {
+  color: #39FF14;
+  text-shadow: 0 0 12px rgba(57, 255, 20, 0.6);
+}
+
+@media (max-width: 600px) {
+  .Card {
+    width: 90%;
+    padding: 1rem;
+  }
+
+  input,
+  button {
+    font-size: 0.9rem;
+  }
+}
 </style>
