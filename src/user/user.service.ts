@@ -72,30 +72,27 @@ export class UserService {
   async findOneByName(name: string) {
     return this.prisma.users.findUnique({ where: { name } });
   }
-
-
   async UpdateUser(name: string, newPassword: string) {
     try {
       const user = await this.prisma.users.findUnique({
         where: { name },
       });
-
+  
       if (!user) {
-        throw { message: 'Usuário não encontrado', statusCode: 404 };
+        throw new Error('Usuário não encontrado');
       }
-
+  
+      const hashPassword = await bcrypt.hash(newPassword, 10);
+  
       const updatedUser = await this.prisma.users.update({
         where: { name },
-        data: { password: newPassword },
+        data: { password: hashPassword },
       });
-
-      return {
-        statusCode: 200,
-        message: 'Usuário atualizado com sucesso',
-        updatedUser,
-      };
+  
+      return updatedUser;
     } catch (error) {
-      throw error || 'Não foi possível atualizar o usuário';
+      throw new Error(error.message || 'Não foi possível atualizar o usuário');
     }
   }
+
 }  

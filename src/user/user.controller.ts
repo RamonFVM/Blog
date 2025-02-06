@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Post, Put, HttpException, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service';
-import { UnauthorizedException } from '@nestjs/common';
+  
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
